@@ -11,7 +11,7 @@ func (c ConfigPlugger) Plug() (err error) {
 	viper.SetConfigName("app.yml")
 	viper.SetConfigType("yaml")
 	viper.AddConfigPath("./var/")
-	viper.AddConfigPath("/etc/media-cloud/")
+	viper.AddConfigPath("/etc/scumbag/")
 	viper.AddConfigPath(".")
 
 	if err := viper.ReadInConfig(); err != nil {
