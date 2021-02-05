@@ -19,9 +19,9 @@ storage:
     ssl: true
 
 database:
+  # sqlite|mysql
   driver: sqlite
   dsn: var/app.database
-  # driver: mysql
-  # connection: user:pass@tcp(127.0.0.1:3306)/dbname?charset=utf8mb4&parseTime=True&loc=Local
+  # dsn: user:pass@tcp(127.0.0.1:3306)/dbname?charset=utf8mb4&parseTime=True&loc=Local
 logging:
   file: var/logs/app.log

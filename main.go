@@ -6,6 +6,7 @@ import (
 	"github.com/famous-sword/scumbag/config"
 	"github.com/famous-sword/scumbag/engine"
 	"github.com/famous-sword/scumbag/entity"
+	"github.com/famous-sword/scumbag/logger"
 	"github.com/famous-sword/scumbag/stroage"
 	"github.com/famous-sword/scumbag/stroage/local"
 	"log"
@@ -13,12 +14,15 @@ import (
 
 func main() {
 	engine.Register(entity.NewDatabasePlugger())
+	engine.Register(logger.NewPlugger())
 
 	err := engine.Bootstrap()
 
 	if err != nil {
 		log.Fatal(err)
 	}
+
+	logger.Writter().Error("hello")
 
 	stroage.SetStorage(local.NewLocal())
 
