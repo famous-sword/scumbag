@@ -21,6 +21,6 @@ func (c ConfigPlugger) Plug() (err error) {
 	return nil
 }
 
-func newConfigPlugger() Plugger {
+func NewConfigPlugger() Plugger {
 	return &ConfigPlugger{}
 }

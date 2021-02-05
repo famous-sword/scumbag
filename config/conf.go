@@ -10,6 +10,10 @@ func Integer(key string) int64 {
 	return viper.GetInt64(key)
 }
 
+func Bool(key string) bool {
+	return viper.GetBool(key)
+}
+
 func Set(key string, value interface{}) {
 	viper.Set(key, value)
 }

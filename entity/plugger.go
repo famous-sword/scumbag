@@ -1,4 +1,4 @@
-package model
+package entity
 
 import (
 	"fmt"
@@ -32,7 +32,7 @@ func resolveDriver() gorm.Dialector {
 	switch config.String("database.driver") {
 	case "mysql":
 		driver = mysql.Open(dsn)
-	case "sqlite":
+	case "sqlite", "sqlite3":
 		fallthrough
 	default:
 		driver = sqlite.Open(dsn)

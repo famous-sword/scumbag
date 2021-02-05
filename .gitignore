@@ -19,4 +19,5 @@
 .DS_Store
 
 # Development resource
+var
 !var/app.yml

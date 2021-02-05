@@ -12,12 +12,15 @@ storage:
     dir: var/
     bucket: resources
   minio:
-    access_token: --
-    access_key: --
+    endpoint: play.min.io
+    access_key_id: Q3AM3UQ867SPQQA43P2F
+    secret_access_key: zuf+tfteSlswRu7BJ86wekitnifILbZam1KYY3TG
+    ssl: true
+
 database:
   driver: sqlite
   dsn: var/app.database
   # driver: mysql
   # connection: user:pass@tcp(127.0.0.1:3306)/dbname?charset=utf8mb4&parseTime=True&loc=Local
 logging:
-  file: var/logs/app.mark
+  file: var/logs/app.log

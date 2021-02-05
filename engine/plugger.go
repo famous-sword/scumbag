@@ -20,7 +20,7 @@ func Bootstrap() error {
 
 func registerKernelPlugger() {
 	kernelStarters := []Plugger{
-		newConfigPlugger(),
+		NewConfigPlugger(),
 	}
 
 	pluggers = append(kernelStarters, pluggers...)
