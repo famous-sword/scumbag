@@ -1,0 +1,23 @@
+app:
+  name: Scumbag
+  debug: true
+web:
+  listen: ":8700"
+transcoding:
+  rpc_listen: ":7100"
+storage:
+  driver: local # local/MinIO
+  # workdir: var/workdir
+  local:
+    dir: var/
+    bucket: resources
+  minio:
+    access_token: --
+    access_key: --
+database:
+  driver: sqlite
+  dsn: var/app.database
+  # driver: mysql
+  # connection: user:pass@tcp(127.0.0.1:3306)/dbname?charset=utf8mb4&parseTime=True&loc=Local
+logging:
+  file: var/logs/app.mark

@@ -1,7 +1,17 @@
 package main
 
-import "github.com/famous-sword/scumbag/config"
+import (
+	"github.com/famous-sword/scumbag/engine"
+	"github.com/famous-sword/scumbag/model"
+	"log"
+)
 
 func main() {
-	config.String("app")
+	engine.Register(model.NewDatabasePlugger())
+
+	err := engine.Bootstrap()
+
+	if err != nil {
+		log.Fatal(err)
+	}
 }

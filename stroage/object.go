@@ -54,3 +54,10 @@ func NewObject() *Object {
 
 	return object
 }
+
+func LoadObject(id string) *Object {
+	object := new(Object)
+	object.id = id
+
+	return object
+}

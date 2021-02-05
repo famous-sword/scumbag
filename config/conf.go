@@ -9,3 +9,7 @@ func String(key string) string {
 func Integer(key string) int64 {
 	return viper.GetInt64(key)
 }
+
+func Set(key string, value interface{}) {
+	viper.Set(key, value)
+}

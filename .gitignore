@@ -14,9 +14,9 @@
 # Dependency directories (remove the comment below to include it)
 # vendor/
 
-# ide
+# Configs of IDE
 .idea
 .DS_Store
 
-# dev resource
-
+# Development resource
+!var/app.yml
