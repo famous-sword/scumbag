@@ -1,11 +1,11 @@
 package stroage
 
-var store Storage
+var adapter Storage
 
 func SetStorage(storage Storage) {
-	store = storage
+	adapter = storage
 }
 
-func Store() Storage {
-	return store
+func Adapter() Storage {
+	return adapter
 }

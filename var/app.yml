@@ -2,14 +2,15 @@ app:
   name: Scumbag
   debug: true
 web:
-  listen: ":8700"
+  host: ""
+  port: 4200
 transcoding:
   rpc_listen: ":7100"
 storage:
   driver: local # local/MinIO
   # workdir: var/workdir
   local:
-    dir: var/
+    workdir: var/
     bucket: resources
   minio:
     endpoint: play.min.io

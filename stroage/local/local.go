@@ -4,6 +4,7 @@ import (
 	"github.com/famous-sword/scumbag/config"
 	"github.com/famous-sword/scumbag/stroage"
 	"github.com/spf13/afero"
+	"path/filepath"
 	"strings"
 )
 
@@ -14,7 +15,11 @@ type Local struct {
 func (local *Local) Put(object *stroage.Object) (err error) {
 	hash := strings.Split(object.Id(), "-")[0]
 
-	err = afero.WriteReader(local.filesystem, hash, object.Reader())
+	err = afero.WriteReader(
+		local.filesystem,
+		filepath.Join(hash, object.Name),
+		object.Reader(),
+	)
 
 	return err
 }
@@ -34,7 +39,7 @@ func (local *Local) Remove(object *stroage.Object) error {
 func NewLocal() stroage.Storage {
 	local := new(Local)
 	fs := afero.NewOsFs()
-	local.filesystem = afero.NewBasePathFs(fs, config.String("workdir"))
+	local.filesystem = afero.NewBasePathFs(fs, config.String("storage.local.workdir"))
 
 	return local
 }
