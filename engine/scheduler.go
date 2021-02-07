@@ -7,12 +7,12 @@ import (
 )
 
 type Scheduler struct {
-	master bool
+	master   bool
 	pluggers []plugger.Plugger
 }
 
-func (sc *Scheduler)Run (ctx context.Context)  {
-	<- ctx.Done()
+func (sc *Scheduler) Run(ctx context.Context) {
+	<-ctx.Done()
 }
 
 func (sc *Scheduler) IsMaster() bool {
@@ -46,7 +46,6 @@ func (sc *Scheduler) Register(plugger plugger.Plugger) {
 func (sc *Scheduler) register(plugger plugger.Plugger) {
 	sc.pluggers = append(sc.pluggers, plugger)
 }
-
 
 func NewScheduler() *Scheduler {
 	return &Scheduler{}

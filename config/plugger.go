@@ -25,4 +25,3 @@ func (c *Plugger) Plug() (err error) {
 func NewPlugger() plugger.Plugger {
 	return &Plugger{}
 }
-
