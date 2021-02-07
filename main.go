@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"fmt"
 	"github.com/famous-sword/scumbag/api"
 	"github.com/famous-sword/scumbag/config"
@@ -13,20 +14,25 @@ import (
 )
 
 func main() {
-	engine.Register(entity.NewDatabasePlugger())
-	engine.Register(logger.NewPlugger())
+	scheduler := engine.NewScheduler()
 
-	err := engine.Bootstrap()
+	scheduler.Register(entity.NewDatabasePlugger())
+	scheduler.Register(logger.NewPlugger())
+
+	err := scheduler.Bootstrap()
 
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	logger.Writter().Error("hello")
-
 	stroage.SetStorage(local.NewLocal())
 
-	api.Uploader().Run(address())
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+
+	go api.Uploader().Run(address())
+
+	scheduler.Run(ctx)
 }
 
 func address() string {

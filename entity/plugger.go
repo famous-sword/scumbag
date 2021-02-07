@@ -3,7 +3,7 @@ package entity
 import (
 	"fmt"
 	"github.com/famous-sword/scumbag/config"
-	"github.com/famous-sword/scumbag/engine"
+	"github.com/famous-sword/scumbag/plugger"
 	"gorm.io/driver/mysql"
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
@@ -22,11 +22,16 @@ func (d *DatabasePlugger) Plug() (err error) {
 		return fmt.Errorf("connect database error %s", err)
 	}
 
+	err = db.AutoMigrate(&Resource{})
+
+	if err != nil {
+		return fmt.Errorf("database migration error %s", err)
+	}
+
 	return nil
 }
 
-func resolveDriver() gorm.Dialector {
-	var driver gorm.Dialector
+func resolveDriver() (driver gorm.Dialector) {
 	dsn := config.String("database.dsn")
 
 	switch config.String("database.driver") {
@@ -41,6 +46,6 @@ func resolveDriver() gorm.Dialector {
 	return driver
 }
 
-func NewDatabasePlugger() engine.Plugger {
+func NewDatabasePlugger() plugger.Plugger {
 	return &DatabasePlugger{}
 }

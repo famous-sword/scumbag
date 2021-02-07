@@ -2,7 +2,7 @@ package logger
 
 import (
 	"github.com/famous-sword/scumbag/config"
-	"github.com/famous-sword/scumbag/engine"
+	"github.com/famous-sword/scumbag/plugger"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
 	"gopkg.in/natefinch/lumberjack.v2"
@@ -32,7 +32,7 @@ func (p Plugger) Plug() (err error) {
 	return nil
 }
 
-func NewPlugger() engine.Plugger {
+func NewPlugger() plugger.Plugger {
 	return &Plugger{}
 }
 

@@ -1,13 +1,14 @@
-package engine
+package config
 
 import (
 	"fmt"
+	"github.com/famous-sword/scumbag/plugger"
 	"github.com/spf13/viper"
 )
 
-type ConfigPlugger struct{}
+type Plugger struct{}
 
-func (c ConfigPlugger) Plug() (err error) {
+func (c *Plugger) Plug() (err error) {
 	viper.SetConfigName("app.yml")
 	viper.SetConfigType("yaml")
 	viper.AddConfigPath("./var/")
@@ -21,6 +22,7 @@ func (c ConfigPlugger) Plug() (err error) {
 	return nil
 }
 
-func NewConfigPlugger() Plugger {
-	return &ConfigPlugger{}
+func NewPlugger() plugger.Plugger {
+	return &Plugger{}
 }
+

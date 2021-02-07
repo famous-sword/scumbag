@@ -9,6 +9,9 @@ const (
 	TYPE_VIDEO = "video"
 	TYPE_AUDIO = "audio"
 	TYPE_DOC   = "doc"
+	TYPE_OTHER = "other"
+
+	STATUS_CREATED = "created"
 )
 
 type Resource struct {

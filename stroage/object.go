@@ -18,7 +18,7 @@ type Object struct {
 
 	Name string
 
-	Size int64
+	Size uint64
 	Hash string
 	Ext  string
 }
@@ -35,7 +35,7 @@ func (object *Object) Read(reader io.Reader) (err error) {
 	hasher.Reset()
 	var buffer bytes.Buffer
 
-	object.Size, err = io.Copy(&buffer, io.TeeReader(reader, hasher))
+	size, err := io.Copy(&buffer, io.TeeReader(reader, hasher))
 
 	if err != nil {
 		return err
@@ -44,6 +44,7 @@ func (object *Object) Read(reader io.Reader) (err error) {
 	object.reader = &buffer
 	object.Hash = hex.EncodeToString(hasher.Sum(nil))
 	object.Ext = strings.TrimLeft(filepath.Ext(object.Name), ".")
+	object.Size = uint64(size)
 
 	return err
 }
