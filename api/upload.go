@@ -26,15 +26,17 @@ func Upload(context *gin.Context) {
 
 	resource := &entity.Resource{
 		MediaId: object.Id(),
-		Status:  entity.STATUS_CREATED,
+		Status:  entity.StatusCreated,
 		Name:    object.Name,
-		Type:    entity.TYPE_OTHER,
+		Type:    entity.TypeOther,
 		Hash:    object.Hash,
-		Size:    object.Size,
-		Ext:     object.Ext,
 	}
 
-	_, err = resource.Create()
+	meta := &entity.Meta{
+		Size: object.Size,
+	}
+
+	_, err = resource.Create(meta)
 
 	if err != nil {
 		context.AbortWithStatusJSON(http.StatusInternalServerError, Error(err))

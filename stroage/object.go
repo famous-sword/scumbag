@@ -5,12 +5,18 @@ import (
 	"crypto/sha256"
 	"encoding/hex"
 	"github.com/google/uuid"
+	"hash"
 	"io"
 	"path/filepath"
 	"strings"
+	"sync"
 )
 
-var hasher = sha256.New()
+var hasherPool = sync.Pool{
+	New: func() interface{} {
+		return sha256.New()
+	},
+}
 
 type Object struct {
 	id     string
@@ -32,7 +38,10 @@ func (object *Object) Reader() io.Reader {
 }
 
 func (object *Object) Read(reader io.Reader) (err error) {
+	hasher := hasherPool.Get().(hash.Hash)
 	hasher.Reset()
+	defer hasherPool.Put(hasher)
+
 	var buffer bytes.Buffer
 
 	size, err := io.Copy(&buffer, io.TeeReader(reader, hasher))
