@@ -12,7 +12,10 @@ const (
 	TypeDoc   = "doc"
 	TypeOther = "other"
 
-	StatusCreated = "created"
+	StatusCreated          = "created"
+	StatusTranscoding      = "transcoding"
+	StatusTranscodeFail    = "fail"
+	StatusTranscodeSuccess = "success"
 )
 
 type Meta struct {
@@ -23,16 +26,20 @@ type Meta struct {
 }
 
 type Resource struct {
-	ID uint `gorm:"primarykey"`
+	ID uint `gorm:"primaryKey"`
 
-	MediaId string `gorm:"size:128,unique_index"`
-	Status  string `gorm:"size:16"`
-	Name    string
-	Type    string `gorm:"size:16"`
-	Hash    string `gorm:"size:256"`
-	Ext     string `gorm:"size:16"`
-	Meta    string `gorm:"type:text"`
-	meta    Meta   `gorm:"-"`
+	Uuid   string `gorm:"size:36,type:char,uniqueIndex"`
+	Status string `gorm:"size:16"`
+	Name   string
+	Type   string `gorm:"size:16"`
+	Hash   string `gorm:"size:256"`
+	Ext    string `gorm:"size:16"`
+	Bucket string `gorm:"size:128"'`
+	// for store, the string type is used
+	// to avoid data being stored as blob
+	Meta string `gorm:"type:text"`
+	// ignore for store, readonly
+	meta Meta `gorm:"-"`
 
 	CreatedAt time.Time
 	UpdatedAt time.Time
@@ -48,15 +55,61 @@ func (r *Resource) Create(meta *Meta) (uint, error) {
 
 	r.Meta = string(bytes)
 
+	if len(r.Type) == 0 {
+		r.Type = CastExtToType(r.Ext)
+	}
+
 	err = db.Create(r).Error
 
 	return r.ID, err
 }
 
 func (r *Resource) Load() error {
-	return db.Where("media_id = ?", r.MediaId).First(r).Error
+	err := db.Where("uuid = ?", r.Uuid).First(r).Error
+
+	if err != nil {
+		return err
+	}
+
+	return json.Unmarshal([]byte(r.Meta), &r.meta)
 }
 
 func (r *Resource) Metas() Meta {
 	return r.meta
+}
+
+var extensions = map[string]string{
+	// videos
+	"mp4":  TypeVideo,
+	"avi":  TypeVideo,
+	"m3u":  TypeVideo,
+	"flv":  TypeVideo,
+	"rm":   TypeVideo,
+	"mkv":  TypeVideo,
+	"mov":  TypeVideo,
+	"webm": TypeVideo,
+	"wmv":  TypeVideo,
+
+	// audios
+	"mp3":  TypeAudio,
+	"flac": TypeAudio,
+	"wav":  TypeAudio,
+	"m4a":  TypeAudio,
+
+	// docs
+	"ppt":  TypeDoc,
+	"pptx": TypeDoc,
+	"doc":  TypeDoc,
+	"docx": TypeDoc,
+	"xls":  TypeDoc,
+	"xlsx": TypeDoc,
+	"pdf":  TypeDoc,
+}
+
+func CastExtToType(ext string) string {
+	if _, has := extensions[ext]; has {
+		return extensions[ext]
+	}
+
+	return TypeOther
 }

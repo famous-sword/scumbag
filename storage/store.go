@@ -1,4 +1,4 @@
-package stroage
+package storage
 
 var adapter Storage
 

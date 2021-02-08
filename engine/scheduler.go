@@ -2,16 +2,24 @@ package engine
 
 import (
 	"context"
+	"fmt"
+	"github.com/famous-sword/scumbag/api"
 	"github.com/famous-sword/scumbag/config"
 	"github.com/famous-sword/scumbag/plugger"
+	"github.com/gin-gonic/gin"
 )
 
 type Scheduler struct {
-	master   bool
-	pluggers []plugger.Plugger
+	master     bool
+	pluggers   []plugger.Plugger
+	httpServer *gin.Engine
 }
 
 func (sc *Scheduler) Run(ctx context.Context) {
+	go func() {
+		sc.httpServer.Run(address())
+	}()
+
 	<-ctx.Done()
 }
 
@@ -27,6 +35,8 @@ func (sc *Scheduler) Bootstrap() error {
 			return err
 		}
 	}
+
+	sc.httpServer = api.Uploader()
 
 	return nil
 }
@@ -49,4 +59,8 @@ func (sc *Scheduler) register(plugger plugger.Plugger) {
 
 func NewScheduler() *Scheduler {
 	return &Scheduler{}
+}
+
+func address() string {
+	return fmt.Sprintf("%s:%d", config.String("web.host"), config.Integer("web.port"))
 }

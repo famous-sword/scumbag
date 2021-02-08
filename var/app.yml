@@ -7,11 +7,12 @@ web:
 transcoding:
   rpc_listen: ":7100"
 storage:
-  driver: local # local/MinIO
-  # workdir: var/workdir
+  driver: local # local|MinIO|ceph
+  workdir: var/workdir
+
   local:
-    workdir: var/
-    bucket: resources
+    mount: var/storage
+
   minio:
     endpoint: play.min.io
     access_key_id: Q3AM3UQ867SPQQA43P2F

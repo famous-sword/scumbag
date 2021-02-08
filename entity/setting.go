@@ -5,7 +5,7 @@ import (
 )
 
 type Setting struct {
-	ID        uint `gorm:"primarykey"`
+	ID        uint `gorm:"primaryKey"`
 	Key       string
 	Data      string `gorm:"type:text"`
 	CreatedAt time.Time
