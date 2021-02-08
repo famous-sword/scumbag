@@ -5,7 +5,7 @@ import (
 	"github.com/famous-sword/scumbag/engine"
 	"github.com/famous-sword/scumbag/entity"
 	"github.com/famous-sword/scumbag/logger"
-	"github.com/famous-sword/scumbag/storage/store"
+	"github.com/famous-sword/scumbag/storage"
 	"log"
 )
 
@@ -14,7 +14,7 @@ func main() {
 
 	scheduler.Register(entity.NewDatabasePlugger())
 	scheduler.Register(logger.NewPlugger())
-	scheduler.Register(store.NewStoragePlugger())
+	scheduler.Register(storage.NewPlugger())
 
 	if err := scheduler.Bootstrap(); err != nil {
 		log.Fatal(err)

@@ -1,4 +1,4 @@
-package meta
+package resource
 
 import (
 	"encoding/json"

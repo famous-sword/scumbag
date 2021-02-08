@@ -1,11 +1,10 @@
-package local
+package driver
 
 import (
 	"github.com/famous-sword/scumbag/config"
 	"github.com/famous-sword/scumbag/entity"
 	"github.com/famous-sword/scumbag/logger"
-	"github.com/famous-sword/scumbag/storage"
-	"github.com/famous-sword/scumbag/storage/meta"
+	"github.com/famous-sword/scumbag/resource"
 	"github.com/spf13/afero"
 	"go.uber.org/zap"
 	"path/filepath"
@@ -17,7 +16,7 @@ type Local struct {
 	fs    afero.Fs
 }
 
-func (local *Local) Put(bucket string, object *storage.Object) (err error) {
+func (local *Local) Put(bucket string, object *resource.Object) (err error) {
 	if err = object.Validate(); err != nil {
 		return err
 	}
@@ -35,7 +34,7 @@ func (local *Local) Put(bucket string, object *storage.Object) (err error) {
 		Uuid: object.Id(),
 	}
 
-	m := &meta.Meta{
+	m := &resource.Meta{
 		Version: 1,
 		Bucket:  bucket,
 		Name:    object.Name,
@@ -50,7 +49,7 @@ func (local *Local) Put(bucket string, object *storage.Object) (err error) {
 	return err
 }
 
-func (local *Local) Get(id string) (*storage.Object, error) {
+func (local *Local) Get(id string) (*resource.Object, error) {
 	record := &entity.LocalStorage{Uuid: id}
 	err := record.Load()
 
@@ -68,7 +67,7 @@ func (local *Local) Get(id string) (*storage.Object, error) {
 		return nil, err
 	}
 
-	object := storage.ObjectOf(id)
+	object := resource.ObjectOf(id)
 	object.Name = metas.Name
 	object.Hash = metas.Hash
 	object.Size = metas.Size
@@ -82,11 +81,11 @@ func (local *Local) Delete(id string) error {
 	panic("implement me")
 }
 
-func (local *Local) Remove(object *storage.Object) error {
+func (local *Local) Remove(object *resource.Object) error {
 	panic("implement me")
 }
 
-func NewLocal() storage.Storage {
+func NewLocal() StorageDriver {
 	local := new(Local)
 	local.mount = config.String("storage.local.mount")
 

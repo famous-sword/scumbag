@@ -9,6 +9,8 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+const Version = "0.0.1-dev"
+
 type Scheduler struct {
 	master     bool
 	pluggers   []plugger.Plugger

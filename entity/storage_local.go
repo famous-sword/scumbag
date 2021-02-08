@@ -2,22 +2,22 @@ package entity
 
 import (
 	"encoding/json"
-	"github.com/famous-sword/scumbag/storage/meta"
+	"github.com/famous-sword/scumbag/resource"
 	"gorm.io/gorm"
 	"time"
 )
 
 type LocalStorage struct {
-	ID        uint      `gorm:"primaryKey"`
-	Uuid      string    `gorm:"size:36,type:char,uniqueIndex"`
-	Meta      string    `gorm:"type:text"`
-	meta      meta.Meta `gorm:"-"`
+	ID        uint          `gorm:"primaryKey"`
+	Uuid      string        `gorm:"size:36,type:char,uniqueIndex"`
+	Meta      string        `gorm:"type:text"`
+	meta      resource.Meta `gorm:"-"`
 	CreatedAt time.Time
 	UpdatedAt time.Time
 	DeletedAt gorm.DeletedAt `gorm:"index"`
 }
 
-func (ls *LocalStorage) Create(m *meta.Meta) (uint, error) {
+func (ls *LocalStorage) Create(m *resource.Meta) (uint, error) {
 	ls.Meta = m.String()
 
 	err := db.Create(ls).Error
@@ -39,6 +39,6 @@ func (ls *LocalStorage) Load() error {
 	return json.Unmarshal([]byte(ls.Meta), &ls.meta)
 }
 
-func (ls *LocalStorage) MetaData() meta.Meta {
+func (ls *LocalStorage) MetaData() resource.Meta {
 	return ls.meta
 }
