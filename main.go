@@ -5,8 +5,7 @@ import (
 	"github.com/famous-sword/scumbag/engine"
 	"github.com/famous-sword/scumbag/entity"
 	"github.com/famous-sword/scumbag/logger"
-	"github.com/famous-sword/scumbag/storage"
-	"github.com/famous-sword/scumbag/storage/local"
+	"github.com/famous-sword/scumbag/storage/store"
 	"log"
 )
 
@@ -15,14 +14,11 @@ func main() {
 
 	scheduler.Register(entity.NewDatabasePlugger())
 	scheduler.Register(logger.NewPlugger())
+	scheduler.Register(store.NewStoragePlugger())
 
-	err := scheduler.Bootstrap()
-
-	if err != nil {
+	if err := scheduler.Bootstrap(); err != nil {
 		log.Fatal(err)
 	}
-
-	storage.SetStorage(local.NewLocal())
 
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()

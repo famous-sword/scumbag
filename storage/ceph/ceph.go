@@ -20,6 +20,6 @@ func (c Ceph) Remove(object *storage.Object) error {
 	panic("implement me")
 }
 
-func NewCeph() storage.Storage {
-	return &Ceph{}
+func NewCeph() (storage.Storage, error) {
+	return &Ceph{}, nil
 }

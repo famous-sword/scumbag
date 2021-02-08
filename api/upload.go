@@ -23,7 +23,7 @@ func Upload(context *gin.Context) {
 	object.Name = name
 	object.Read(body)
 
-	err := storage.Adapter().Put(bucket, object)
+	err := storage.Driver().Put(bucket, object)
 
 	if err != nil {
 		context.AbortWithStatusJSON(http.StatusInternalServerError, Error(err))

@@ -1,11 +1,11 @@
 package storage
 
-var adapter Storage
+var driver Storage
 
-func SetStorage(storage Storage) {
-	adapter = storage
+func SetDriver(storage Storage) {
+	driver = storage
 }
 
-func Adapter() Storage {
-	return adapter
+func Driver() Storage {
+	return driver
 }
