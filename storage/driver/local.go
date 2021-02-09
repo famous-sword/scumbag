@@ -4,7 +4,7 @@ import (
 	"github.com/famous-sword/scumbag/config"
 	"github.com/famous-sword/scumbag/entity"
 	"github.com/famous-sword/scumbag/logger"
-	"github.com/famous-sword/scumbag/resource"
+	"github.com/famous-sword/scumbag/storage/warp"
 	"github.com/spf13/afero"
 	"go.uber.org/zap"
 	"path/filepath"
@@ -16,7 +16,7 @@ type Local struct {
 	fs    afero.Fs
 }
 
-func (local *Local) Put(bucket string, object *resource.Object) (err error) {
+func (local *Local) Put(bucket string, object *warp.Object) (err error) {
 	if err = object.Validate(); err != nil {
 		return err
 	}
@@ -34,7 +34,7 @@ func (local *Local) Put(bucket string, object *resource.Object) (err error) {
 		Uuid: object.Id(),
 	}
 
-	m := &resource.Meta{
+	m := &warp.Meta{
 		Version: 1,
 		Bucket:  bucket,
 		Name:    object.Name,
@@ -49,7 +49,7 @@ func (local *Local) Put(bucket string, object *resource.Object) (err error) {
 	return err
 }
 
-func (local *Local) Get(id string) (*resource.Object, error) {
+func (local *Local) Get(id string) (*warp.Object, error) {
 	record := &entity.LocalStorage{Uuid: id}
 	err := record.Load()
 
@@ -67,7 +67,7 @@ func (local *Local) Get(id string) (*resource.Object, error) {
 		return nil, err
 	}
 
-	object := resource.ObjectOf(id)
+	object := warp.ObjectOf(id)
 	object.Name = metas.Name
 	object.Hash = metas.Hash
 	object.Size = metas.Size
@@ -81,7 +81,7 @@ func (local *Local) Delete(id string) error {
 	panic("implement me")
 }
 
-func (local *Local) Remove(object *resource.Object) error {
+func (local *Local) Remove(object *warp.Object) error {
 	panic("implement me")
 }
 

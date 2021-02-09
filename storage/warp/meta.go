@@ -1,4 +1,4 @@
-package resource
+package warp
 
 import (
 	"encoding/json"

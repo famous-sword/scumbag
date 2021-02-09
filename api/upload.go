@@ -2,8 +2,8 @@ package api
 
 import (
 	"github.com/famous-sword/scumbag/entity"
-	resource2 "github.com/famous-sword/scumbag/resource"
 	"github.com/famous-sword/scumbag/storage"
+	"github.com/famous-sword/scumbag/storage/warp"
 	"github.com/gin-gonic/gin"
 	"net/http"
 	"strings"
@@ -20,7 +20,7 @@ func Upload(context *gin.Context) {
 	// todo: check hash for fast upload
 	_ = strings.Split(digest, "=")[1]
 
-	object := resource2.NewObject()
+	object := warp.NewObject()
 	object.Name = name
 	object.Read(body)
 
