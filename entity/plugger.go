@@ -22,7 +22,7 @@ func (d *DatabasePlugger) Plug() (err error) {
 		return fmt.Errorf("connect database error %s", err)
 	}
 
-	err = db.AutoMigrate(&Resource{}, &LocalStorage{})
+	err = db.AutoMigrate(&Resource{})
 
 	if err != nil {
 		return fmt.Errorf("migration error %s", err)

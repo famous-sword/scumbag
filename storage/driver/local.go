@@ -2,13 +2,8 @@ package driver
 
 import (
 	"github.com/famous-sword/scumbag/config"
-	"github.com/famous-sword/scumbag/entity"
-	"github.com/famous-sword/scumbag/logger"
-	"github.com/famous-sword/scumbag/storage/warp"
 	"github.com/spf13/afero"
-	"go.uber.org/zap"
-	"path/filepath"
-	"strings"
+	"io"
 )
 
 type Local struct {
@@ -16,72 +11,19 @@ type Local struct {
 	fs    afero.Fs
 }
 
-func (local *Local) Put(bucket string, object *warp.Object) (err error) {
-	if err = object.Validate(); err != nil {
-		return err
-	}
-
-	hash := strings.Split(object.Id(), "-")[0]
-	key := filepath.Join(bucket, hash, object.Name)
-
-	err = afero.WriteReader(local.fs, key, object.Reader())
-
-	if err != nil {
-		return err
-	}
-
-	localStorage := &entity.LocalStorage{
-		Uuid: object.Id(),
-	}
-
-	m := &warp.Meta{
-		Version: 1,
-		Bucket:  bucket,
-		Name:    object.Name,
-		Key:     key,
-		Size:    object.Size,
-		Hash:    object.Hash,
-		Ext:     object.Ext,
-	}
-
-	_, err = localStorage.Create(m)
-
-	return err
+func (local *Local) Put(key string, reader io.Reader) error {
+	return afero.WriteReader(local.fs, key, reader)
 }
 
-func (local *Local) Get(id string) (*warp.Object, error) {
-	record := &entity.LocalStorage{Uuid: id}
-	err := record.Load()
-
-	if err != nil {
-		logger.Writter().Error("local storage get", zap.Error(err))
-
-		return nil, err
-	}
-
-	metas := record.MetaData()
-
-	file, err := local.fs.Open(metas.Key)
-
-	if err != nil {
-		return nil, err
-	}
-
-	object := warp.ObjectOf(id)
-	object.Name = metas.Name
-	object.Hash = metas.Hash
-	object.Size = metas.Size
-	object.Ext = metas.Ext
-	object.SetReader(file)
-
-	return object, nil
-}
-
-func (local *Local) Delete(id string) error {
+func (local *Local) Get(key string) (io.Reader, error) {
 	panic("implement me")
 }
 
-func (local *Local) Remove(object *warp.Object) error {
+func (local *Local) Remove(key string) error {
+	panic("implement me")
+}
+
+func (local *Local) Sync(key, pathname string) error {
 	panic("implement me")
 }
 

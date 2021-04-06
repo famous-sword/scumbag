@@ -2,9 +2,9 @@ package driver
 
 import (
 	"github.com/famous-sword/scumbag/config"
-	"github.com/famous-sword/scumbag/storage/warp"
 	"github.com/minio/minio-go/v7"
 	"github.com/minio/minio-go/v7/pkg/credentials"
+	"io"
 )
 
 var (
@@ -18,19 +18,19 @@ type Minio struct {
 	client *minio.Client
 }
 
-func (m Minio) Put(bucket string, object *warp.Object) error {
+func (m Minio) Put(key string, reader io.Reader) error {
 	panic("implement me")
 }
 
-func (m Minio) Get(id string) (*warp.Object, error) {
+func (m Minio) Get(key string) (io.Reader, error) {
 	panic("implement me")
 }
 
-func (m Minio) Delete(id string) error {
+func (m Minio) Remove(key string) error {
 	panic("implement me")
 }
 
-func (m Minio) Remove(object *warp.Object) error {
+func (m Minio) Sync(key, pathname string) error {
 	panic("implement me")
 }
 

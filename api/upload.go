@@ -1,15 +1,11 @@
 package api
 
 import (
-	"github.com/famous-sword/scumbag/entity"
 	"github.com/famous-sword/scumbag/storage"
-	"github.com/famous-sword/scumbag/storage/warp"
 	"github.com/gin-gonic/gin"
 	"net/http"
 	"strings"
 )
-
-var bucket = "public"
 
 func Upload(context *gin.Context) {
 	request := context.Request
@@ -20,34 +16,11 @@ func Upload(context *gin.Context) {
 	// todo: check hash for fast upload
 	_ = strings.Split(digest, "=")[1]
 
-	object := warp.NewObject()
-	object.Name = name
-	object.Read(body)
-
-	err := storage.Driver().Put(bucket, object)
+	err := storage.Put("public", name, body)
 
 	if err != nil {
-		context.AbortWithStatusJSON(http.StatusInternalServerError, Error(err))
+		context.AbortWithStatusJSON(http.StatusInternalServerError, Error.WithMessage(err.Error()))
 	}
 
-	resource := &entity.Resource{
-		Uuid:   object.Id(),
-		Status: entity.StatusCreated,
-		Name:   object.Name,
-		Hash:   object.Hash,
-		Ext:    object.Ext,
-		Bucket: bucket,
-	}
-
-	meta := &entity.Meta{
-		Size: object.Size,
-	}
-
-	_, err = resource.Create(meta)
-
-	if err != nil {
-		context.AbortWithStatusJSON(http.StatusInternalServerError, Error(err))
-	}
-
-	context.JSON(http.StatusOK, Success(nil))
+	context.JSON(http.StatusOK, Success)
 }

@@ -1,12 +1,10 @@
 package driver
 
-import (
-	"github.com/famous-sword/scumbag/storage/warp"
-)
+import "io"
 
 type StorageDriver interface {
-	Put(bucket string, object *warp.Object) error
-	Get(id string) (*warp.Object, error)
-	Delete(id string) error
-	Remove(object *warp.Object) error
+	Put(key string, reader io.Reader) error
+	Get(key string) (io.Reader, error)
+	Remove(key string) error
+	Sync(key, pathname string) error
 }

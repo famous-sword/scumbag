@@ -1,7 +1,6 @@
 package entity
 
 import (
-	"encoding/json"
 	"gorm.io/gorm"
 	"time"
 )
@@ -17,66 +16,6 @@ const (
 	StatusTranscodeFail    = "fail"
 	StatusTranscodeSuccess = "success"
 )
-
-type Meta struct {
-	Output   string            `json:"output"`
-	Size     uint64            `json:"size"`
-	Duration uint64            `json:"duration"`
-	Levels   map[string]string `json:"levels"`
-}
-
-type Resource struct {
-	ID uint `gorm:"primaryKey"`
-
-	Uuid   string `gorm:"size:36,type:char,uniqueIndex"`
-	Status string `gorm:"size:16"`
-	Name   string
-	Type   string `gorm:"size:16"`
-	Hash   string `gorm:"size:256"`
-	Ext    string `gorm:"size:16"`
-	Bucket string `gorm:"size:128"'`
-	// for store, the string type is used
-	// to avoid data being stored as blob
-	Meta string `gorm:"type:text"`
-	// ignore for store, readonly
-	meta Meta `gorm:"-"`
-
-	CreatedAt time.Time
-	UpdatedAt time.Time
-	DeletedAt gorm.DeletedAt `gorm:"index"`
-}
-
-func (r *Resource) Create(meta *Meta) (uint, error) {
-	bytes, err := json.Marshal(meta)
-
-	if err != nil {
-		return 0, err
-	}
-
-	r.Meta = string(bytes)
-
-	if len(r.Type) == 0 {
-		r.Type = CastExtToType(r.Ext)
-	}
-
-	err = db.Create(r).Error
-
-	return r.ID, err
-}
-
-func (r *Resource) Load() error {
-	err := db.Where("uuid = ?", r.Uuid).First(r).Error
-
-	if err != nil {
-		return err
-	}
-
-	return json.Unmarshal([]byte(r.Meta), &r.meta)
-}
-
-func (r *Resource) Metas() Meta {
-	return r.meta
-}
 
 var extensions = map[string]string{
 	// videos
@@ -106,10 +45,99 @@ var extensions = map[string]string{
 	"pdf":  TypeDoc,
 }
 
-func CastExtToType(ext string) string {
+type Resource struct {
+	ID uint `gorm:"primaryKey"`
+
+	Uuid   string `gorm:"size:36,type:char,uniqueIndex"`
+	Status string `gorm:"size:16"`
+	Name   string
+	Type   string `gorm:"size:16"`
+	Hash   string `gorm:"size:256"`
+	Ext    string `gorm:"size:16"`
+	Bucket string `gorm:"size:128"'`
+	Key    string
+	Size   int64
+	// for store, the string type is used
+
+	CreatedAt time.Time
+	UpdatedAt time.Time
+	DeletedAt gorm.DeletedAt `gorm:"index"`
+}
+
+type ResourceRepository struct {
+	resource *Resource
+}
+
+func (r *ResourceRepository) CastExtToType(ext string) string {
 	if _, has := extensions[ext]; has {
 		return extensions[ext]
 	}
 
 	return TypeOther
+}
+
+func (r *ResourceRepository) Save() error {
+	return db.Create(r.resource).Error
+}
+
+func (r *ResourceRepository) Uuid(uuid string) *ResourceRepository {
+	r.resource.Uuid = uuid
+
+	return r
+}
+
+func (r *ResourceRepository) Status(status string) *ResourceRepository {
+	r.resource.Status = status
+
+	return r
+}
+
+func (r *ResourceRepository) Name(name string) *ResourceRepository {
+	r.resource.Name = name
+
+	return r
+}
+
+func (r *ResourceRepository) Type(typeName string) *ResourceRepository {
+	r.resource.Type = typeName
+
+	return r
+}
+
+func (r *ResourceRepository) Hash(hash string) *ResourceRepository {
+	r.resource.Hash = hash
+
+	return r
+}
+
+func (r *ResourceRepository) Ext(ext string) *ResourceRepository {
+	r.resource.Ext = ext
+	r.resource.Type = r.CastExtToType(ext)
+
+	return r
+}
+
+func (r *ResourceRepository) Bucket(bucket string) *ResourceRepository {
+	r.resource.Bucket = bucket
+
+	return r
+}
+
+func (r *ResourceRepository) Key(key string) *ResourceRepository {
+	r.resource.Key = key
+
+	return r
+}
+
+func (r *ResourceRepository) Size(size int64) *ResourceRepository {
+	r.resource.Size = size
+
+	return r
+}
+
+func NewResourceRepository() *ResourceRepository {
+	r := &ResourceRepository{}
+	r.resource = &Resource{}
+
+	return r
 }

@@ -13,6 +13,7 @@ const Version = "0.0.1-dev"
 
 type Scheduler struct {
 	master     bool
+	nodes      []node
 	pluggers   []plugger.Plugger
 	httpServer *gin.Engine
 }

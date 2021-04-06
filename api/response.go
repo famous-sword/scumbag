@@ -1,20 +1,30 @@
 package api
 
-import (
-	"github.com/gin-gonic/gin"
-)
+import "net/http"
 
-func Error(err error) gin.H {
-	return gin.H{
-		"code":    0,
-		"message": err.Error(),
-	}
+type Response struct {
+	Code    int         `json:"code"`
+	Message string      `json:"message"`
+	Data    interface{} `json:"data"`
 }
 
-func Success(data interface{}) gin.H {
-	return gin.H{
-		"code":    1,
-		"message": "success",
-		"data":    data,
-	}
+var (
+	Success = NewResponse(http.StatusOK, "ok")
+	Error   = NewResponse(http.StatusInternalServerError, "error")
+)
+
+func (r *Response) WithMessage(message string) *Response {
+	r.Message = message
+
+	return r
+}
+
+func (r *Response) WithData(data interface{}) *Response {
+	r.Data = data
+
+	return r
+}
+
+func NewResponse(code int, message string) *Response {
+	return &Response{Code: code, Message: message}
 }

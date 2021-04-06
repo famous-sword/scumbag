@@ -1,24 +1,22 @@
 package driver
 
-import (
-	"github.com/famous-sword/scumbag/storage/warp"
-)
+import "io"
 
 type Ceph struct{}
 
-func (c Ceph) Put(bucket string, object *warp.Object) error {
+func (c Ceph) Put(key string, reader io.Reader) error {
 	panic("implement me")
 }
 
-func (c Ceph) Get(id string) (*warp.Object, error) {
+func (c Ceph) Get(key string) (io.Reader, error) {
 	panic("implement me")
 }
 
-func (c Ceph) Delete(id string) error {
+func (c Ceph) Remove(key string) error {
 	panic("implement me")
 }
 
-func (c Ceph) Remove(object *warp.Object) error {
+func (c Ceph) Sync(key, pathname string) error {
 	panic("implement me")
 }
 
