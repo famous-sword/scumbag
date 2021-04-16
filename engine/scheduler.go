@@ -3,9 +3,8 @@ package engine
 import (
 	"context"
 	"fmt"
-	"github.com/famous-sword/scumbag/api"
 	"github.com/famous-sword/scumbag/config"
-	"github.com/famous-sword/scumbag/plugger"
+	"github.com/famous-sword/scumbag/setup"
 	"github.com/gin-gonic/gin"
 )
 
@@ -14,7 +13,8 @@ const Version = "0.0.1-dev"
 type Scheduler struct {
 	master     bool
 	nodes      []node
-	pluggers   []plugger.Plugger
+	pluggers   []setup.Plugger
+	routes     []setup.Routable
 	httpServer *gin.Engine
 }
 
@@ -39,29 +39,40 @@ func (sc *Scheduler) Bootstrap() error {
 		}
 	}
 
-	sc.httpServer = api.Uploader()
+	for _, route := range sc.routes {
+		route.ApplyRoutes(sc.httpServer)
+	}
 
 	return nil
 }
 
 func (sc *Scheduler) registerKernelPlugger() {
-	kernelStarters := []plugger.Plugger{
+	kernelStarters := []setup.Plugger{
 		config.NewPlugger(),
 	}
 
 	sc.pluggers = append(kernelStarters, sc.pluggers...)
 }
 
-func (sc *Scheduler) Register(plugger plugger.Plugger) {
-	sc.register(plugger)
+func (sc *Scheduler) Register(feature interface{}) {
+	sc.register(feature)
 }
 
-func (sc *Scheduler) register(plugger plugger.Plugger) {
-	sc.pluggers = append(sc.pluggers, plugger)
+func (sc *Scheduler) register(feature interface{}) {
+	if s, ok := feature.(setup.Plugger); ok {
+		sc.pluggers = append(sc.pluggers, s)
+	}
+
+	if s, ok := feature.(setup.Routable); ok {
+		sc.routes = append(sc.routes, s)
+	}
 }
 
 func NewScheduler() *Scheduler {
-	return &Scheduler{}
+	s := &Scheduler{}
+	s.httpServer = gin.Default()
+
+	return s
 }
 
 func address() string {

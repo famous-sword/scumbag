@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"github.com/famous-sword/scumbag/api"
 	"github.com/famous-sword/scumbag/engine"
 	"github.com/famous-sword/scumbag/entity"
 	"github.com/famous-sword/scumbag/logger"
@@ -15,6 +16,7 @@ func main() {
 	scheduler.Register(entity.NewDatabasePlugger())
 	scheduler.Register(logger.NewPlugger())
 	scheduler.Register(storage.NewPlugger())
+	scheduler.Register(api.NewUploader())
 
 	if err := scheduler.Bootstrap(); err != nil {
 		log.Fatal(err)

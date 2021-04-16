@@ -2,7 +2,7 @@ package storage
 
 import (
 	"github.com/famous-sword/scumbag/config"
-	"github.com/famous-sword/scumbag/plugger"
+	"github.com/famous-sword/scumbag/setup"
 	"github.com/famous-sword/scumbag/storage/driver"
 )
 
@@ -30,11 +30,11 @@ func (p *Plugger) Plug() (err error) {
 	return err
 }
 
-func NewPlugger() plugger.Plugger {
+func NewPlugger() setup.Plugger {
 	return &Plugger{}
 }
 
-// for change driver runtime
+// SetDriver for change driver runtime
 func SetDriver(storage driver.StorageDriver) {
 	_driver = storage
 }

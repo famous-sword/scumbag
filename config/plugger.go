@@ -2,7 +2,7 @@ package config
 
 import (
 	"fmt"
-	"github.com/famous-sword/scumbag/plugger"
+	"github.com/famous-sword/scumbag/setup"
 	"github.com/spf13/viper"
 )
 
@@ -22,6 +22,6 @@ func (c *Plugger) Plug() (err error) {
 	return nil
 }
 
-func NewPlugger() plugger.Plugger {
+func NewPlugger() setup.Plugger {
 	return &Plugger{}
 }

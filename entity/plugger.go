@@ -3,7 +3,7 @@ package entity
 import (
 	"fmt"
 	"github.com/famous-sword/scumbag/config"
-	"github.com/famous-sword/scumbag/plugger"
+	"github.com/famous-sword/scumbag/setup"
 	"gorm.io/driver/mysql"
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
@@ -46,6 +46,6 @@ func resolveDriver() (driver gorm.Dialector) {
 	return driver
 }
 
-func NewDatabasePlugger() plugger.Plugger {
+func NewDatabasePlugger() setup.Plugger {
 	return &DatabasePlugger{}
 }
