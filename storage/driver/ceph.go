@@ -1,6 +1,9 @@
 package driver
 
-import "io"
+import (
+	"github.com/famous-sword/scumbag/foundation"
+	"io"
+)
 
 type Ceph struct{}
 
@@ -20,6 +23,6 @@ func (c Ceph) Sync(key, pathname string) error {
 	panic("implement me")
 }
 
-func NewCeph() (StorageDriver, error) {
+func NewCeph() (foundation.StorageDriver, error) {
 	return &Ceph{}, nil
 }

@@ -4,20 +4,21 @@ import (
 	"context"
 	"fmt"
 	"github.com/famous-sword/scumbag/config"
-	"github.com/famous-sword/scumbag/setup"
+	"github.com/famous-sword/scumbag/foundation"
 	"github.com/gin-gonic/gin"
 )
 
 const Version = "0.0.1-dev"
 
 type Scheduler struct {
-	master     bool
-	nodes      []node
-	pluggers   []setup.Plugger
-	routes     []setup.Routable
-	httpServer *gin.Engine
+	master       bool
+	nodes        []node
+	bootstrapper []foundation.Bootable
+	routes       []foundation.Routable
+	httpServer   *gin.Engine
 }
 
+// Run run scheduler with a context
 func (sc *Scheduler) Run(ctx context.Context) {
 	go func() {
 		sc.httpServer.Run(address())
@@ -26,45 +27,50 @@ func (sc *Scheduler) Run(ctx context.Context) {
 	<-ctx.Done()
 }
 
+// IsMaster judge scheduler as s master node
 func (sc *Scheduler) IsMaster() bool {
 	return sc.master
 }
 
+// Bootstrap scheduler set up, apply kernel components
 func (sc *Scheduler) Bootstrap() error {
-	sc.registerKernelPlugger()
+	sc.setupKernel()
 
-	for _, plugger := range sc.pluggers {
-		if err := plugger.Plug(); err != nil {
+	for _, plugger := range sc.bootstrapper {
+		if err := plugger.Bootstrap(); err != nil {
 			return err
 		}
 	}
 
 	for _, route := range sc.routes {
-		route.ApplyRoutes(sc.httpServer)
+		route.Register(sc.httpServer)
 	}
 
 	return nil
 }
 
-func (sc *Scheduler) registerKernelPlugger() {
-	kernelStarters := []setup.Plugger{
-		config.NewPlugger(),
-	}
-
-	sc.pluggers = append(kernelStarters, sc.pluggers...)
-}
-
+// Register can register a feature
+// feature can be a foundation.Bootable
+// can also be a foundation.Routable
 func (sc *Scheduler) Register(feature interface{}) {
 	sc.register(feature)
 }
 
-func (sc *Scheduler) register(feature interface{}) {
-	if s, ok := feature.(setup.Plugger); ok {
-		sc.pluggers = append(sc.pluggers, s)
+func (sc *Scheduler) setupKernel() {
+	bootstrappers := []foundation.Bootable{
+		config.NewBootstrapper(),
 	}
 
-	if s, ok := feature.(setup.Routable); ok {
-		sc.routes = append(sc.routes, s)
+	sc.bootstrapper = append(bootstrappers, sc.bootstrapper...)
+}
+
+func (sc *Scheduler) register(feature interface{}) {
+	if plugger, ok := feature.(foundation.Bootable); ok {
+		sc.bootstrapper = append(sc.bootstrapper, plugger)
+	}
+
+	if routes, ok := feature.(foundation.Routable); ok {
+		sc.routes = append(sc.routes, routes)
 	}
 }
 

@@ -2,16 +2,16 @@ package storage
 
 import (
 	"github.com/famous-sword/scumbag/config"
-	"github.com/famous-sword/scumbag/setup"
+	"github.com/famous-sword/scumbag/foundation"
 	"github.com/famous-sword/scumbag/storage/driver"
 )
 
-var _driver driver.StorageDriver
+var _driver foundation.StorageDriver
 
-type Plugger struct{}
+type Bootstrapper struct{}
 
-func (p *Plugger) Plug() (err error) {
-	var s driver.StorageDriver
+func (_ *Bootstrapper) Bootstrap() (err error) {
+	var s foundation.StorageDriver
 	switch config.String("storage.driver") {
 	case "minio":
 		s, err = driver.NewMinio()
@@ -30,15 +30,15 @@ func (p *Plugger) Plug() (err error) {
 	return err
 }
 
-func NewPlugger() setup.Plugger {
-	return &Plugger{}
+func NewBootstrapper() foundation.Bootable {
+	return &Bootstrapper{}
 }
 
 // SetDriver for change driver runtime
-func SetDriver(storage driver.StorageDriver) {
+func SetDriver(storage foundation.StorageDriver) {
 	_driver = storage
 }
 
-func Driver() driver.StorageDriver {
+func Driver() foundation.StorageDriver {
 	return _driver
 }

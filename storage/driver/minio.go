@@ -2,6 +2,7 @@ package driver
 
 import (
 	"github.com/famous-sword/scumbag/config"
+	"github.com/famous-sword/scumbag/foundation"
 	"github.com/minio/minio-go/v7"
 	"github.com/minio/minio-go/v7/pkg/credentials"
 	"io"
@@ -34,7 +35,7 @@ func (m Minio) Sync(key, pathname string) error {
 	panic("implement me")
 }
 
-func NewMinio() (StorageDriver, error) {
+func NewMinio() (foundation.StorageDriver, error) {
 	var err error
 
 	store := new(Minio)

@@ -13,9 +13,9 @@ import (
 func main() {
 	scheduler := engine.NewScheduler()
 
-	scheduler.Register(entity.NewDatabasePlugger())
-	scheduler.Register(logger.NewPlugger())
-	scheduler.Register(storage.NewPlugger())
+	scheduler.Register(entity.NewDatabaseBootstrapper())
+	scheduler.Register(logger.NewBootstrapper())
+	scheduler.Register(storage.NewBootstrapper())
 	scheduler.Register(api.NewUploader())
 
 	if err := scheduler.Bootstrap(); err != nil {

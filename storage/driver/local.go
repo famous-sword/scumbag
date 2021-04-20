@@ -2,6 +2,7 @@ package driver
 
 import (
 	"github.com/famous-sword/scumbag/config"
+	"github.com/famous-sword/scumbag/foundation"
 	"github.com/spf13/afero"
 	"io"
 )
@@ -16,18 +17,26 @@ func (local *Local) Put(key string, reader io.Reader) error {
 }
 
 func (local *Local) Get(key string) (io.Reader, error) {
-	panic("implement me")
+	file, err := local.fs.Open(key)
+
+	return file, err
 }
 
 func (local *Local) Remove(key string) error {
-	panic("implement me")
+	err := local.fs.Remove(key)
+
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
 
 func (local *Local) Sync(key, pathname string) error {
 	panic("implement me")
 }
 
-func NewLocal() StorageDriver {
+func NewLocal() foundation.StorageDriver {
 	local := new(Local)
 	local.mount = config.String("storage.local.mount")
 

@@ -2,13 +2,13 @@ package config
 
 import (
 	"fmt"
-	"github.com/famous-sword/scumbag/setup"
+	"github.com/famous-sword/scumbag/foundation"
 	"github.com/spf13/viper"
 )
 
-type Plugger struct{}
+type Bootstrapper struct{}
 
-func (c *Plugger) Plug() (err error) {
+func (_ *Bootstrapper) Bootstrap() (err error) {
 	viper.SetConfigName("app.yml")
 	viper.SetConfigType("yaml")
 	viper.AddConfigPath("./var/")
@@ -22,6 +22,6 @@ func (c *Plugger) Plug() (err error) {
 	return nil
 }
 
-func NewPlugger() setup.Plugger {
-	return &Plugger{}
+func NewBootstrapper() foundation.Bootable {
+	return &Bootstrapper{}
 }

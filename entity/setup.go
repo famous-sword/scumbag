@@ -3,7 +3,7 @@ package entity
 import (
 	"fmt"
 	"github.com/famous-sword/scumbag/config"
-	"github.com/famous-sword/scumbag/setup"
+	"github.com/famous-sword/scumbag/foundation"
 	"gorm.io/driver/mysql"
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
@@ -11,9 +11,9 @@ import (
 
 var db *gorm.DB
 
-type DatabasePlugger struct{}
+type Bootstrapper struct{}
 
-func (d *DatabasePlugger) Plug() (err error) {
+func (d *Bootstrapper) Bootstrap() (err error) {
 	db, err = gorm.Open(resolveDriver(), &gorm.Config{
 		DisableForeignKeyConstraintWhenMigrating: true,
 	})
@@ -46,6 +46,6 @@ func resolveDriver() (driver gorm.Dialector) {
 	return driver
 }
 
-func NewDatabasePlugger() setup.Plugger {
-	return &DatabasePlugger{}
+func NewDatabaseBootstrapper() foundation.Bootable {
+	return &Bootstrapper{}
 }

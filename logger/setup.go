@@ -2,7 +2,7 @@ package logger
 
 import (
 	"github.com/famous-sword/scumbag/config"
-	"github.com/famous-sword/scumbag/setup"
+	"github.com/famous-sword/scumbag/foundation"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
 	"gopkg.in/natefinch/lumberjack.v2"
@@ -10,9 +10,9 @@ import (
 
 var writer *zap.Logger = zap.NewNop()
 
-type Plugger struct{}
+type Bootstrapper struct{}
 
-func (p Plugger) Plug() (err error) {
+func (_ *Bootstrapper) Bootstrap() (err error) {
 	fileWriteSyncer := zapcore.AddSync(&lumberjack.Logger{
 		Filename:   config.String("logging.file"),
 		MaxSize:    1,
@@ -32,8 +32,8 @@ func (p Plugger) Plug() (err error) {
 	return nil
 }
 
-func NewPlugger() setup.Plugger {
-	return &Plugger{}
+func NewBootstrapper() foundation.Bootable {
+	return &Bootstrapper{}
 }
 
 func Writter() *zap.Logger {

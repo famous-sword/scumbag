@@ -1,7 +1,7 @@
 package api
 
 import (
-	"github.com/famous-sword/scumbag/setup"
+	"github.com/famous-sword/scumbag/foundation"
 	"github.com/famous-sword/scumbag/storage"
 	"github.com/gin-gonic/gin"
 	"net/http"
@@ -10,7 +10,7 @@ import (
 
 type Uploader struct{}
 
-func (u *Uploader) ApplyRoutes(router *gin.Engine) {
+func (u *Uploader) Register(router *gin.Engine) {
 	router.PUT("/upload", u.upload)
 }
 
@@ -32,6 +32,6 @@ func (u *Uploader) upload(context *gin.Context) {
 	context.JSON(http.StatusOK, Success)
 }
 
-func NewUploader() setup.Routable {
+func NewUploader() foundation.Routable {
 	return &Uploader{}
 }
