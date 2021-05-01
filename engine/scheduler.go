@@ -20,6 +20,8 @@ type Scheduler struct {
 
 // Run run scheduler with a context
 func (sc *Scheduler) Run(ctx context.Context) {
+	sc.showBanner()
+
 	go func() {
 		sc.httpServer.Run(address())
 	}()
@@ -43,7 +45,7 @@ func (sc *Scheduler) Bootstrap() error {
 	}
 
 	for _, route := range sc.routes {
-		route.Register(sc.httpServer)
+		route.Apply(sc.httpServer)
 	}
 
 	return nil
@@ -72,6 +74,10 @@ func (sc *Scheduler) register(feature interface{}) {
 	if routes, ok := feature.(foundation.Routable); ok {
 		sc.routes = append(sc.routes, routes)
 	}
+}
+
+func (sc *Scheduler) showBanner() {
+	fmt.Printf("Scumbag version: %s\n", Version)
 }
 
 func NewScheduler() *Scheduler {

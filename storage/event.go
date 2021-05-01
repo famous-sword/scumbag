@@ -4,8 +4,12 @@ import (
 	"bytes"
 	"crypto/sha256"
 	"encoding/hex"
+	"errors"
+	"fmt"
 	"github.com/famous-sword/scumbag/entity"
+	"github.com/famous-sword/scumbag/logger"
 	"github.com/google/uuid"
+	"go.uber.org/zap"
 	"io"
 	"path/filepath"
 	"strings"
@@ -13,6 +17,7 @@ import (
 
 var hasher = sha256.New()
 
+// Put storage file to database, then sync to storage driver
 func Put(bucket string, name string, reader io.Reader) error {
 	var buffer bytes.Buffer
 	hasher.Reset()
@@ -42,4 +47,23 @@ func Put(bucket string, name string, reader io.Reader) error {
 		Bucket(bucket)
 
 	return repository.Save()
+}
+
+// Read read file from database, then read
+// binary from driver
+func Read(id string) (io.Reader, error) {
+	resource := entity.NewResourceRepository().FindByUuid(id)
+
+	if len(resource.Key) == 0 {
+		logger.Writer().Error("file {} not exists", zap.String("{}", resource.Key))
+		return nil, errors.New(fmt.Sprintf("resource #[%s] not exists", id))
+	}
+
+	reader, err := Driver().Get(resource.Key)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return reader, nil
 }

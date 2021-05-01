@@ -9,7 +9,7 @@ type Bootable interface {
 }
 
 // Routable register routes by
-// implementing the `Register` method
+// implementing the `Apply` method
 type Routable interface {
-	Register(router *gin.Engine)
+	Apply(router *gin.Engine)
 }

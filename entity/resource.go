@@ -49,14 +49,14 @@ type Resource struct {
 	ID uint `gorm:"primaryKey"`
 
 	Uuid   string `gorm:"size:36,type:char,uniqueIndex"`
-	Status string `gorm:"size:16"`
 	Name   string
 	Type   string `gorm:"size:16"`
 	Hash   string `gorm:"size:256"`
-	Ext    string `gorm:"size:16"`
-	Bucket string `gorm:"size:128"'`
-	Key    string
 	Size   int64
+	Ext    string `gorm:"size:16"`
+	Key    string
+	Bucket string `gorm:"size:128"'`
+	Status string `gorm:"size:16"`
 	// for store, the string type is used
 
 	CreatedAt time.Time
@@ -66,6 +66,12 @@ type Resource struct {
 
 type ResourceRepository struct {
 	resource *Resource
+}
+
+func (r *ResourceRepository) FindByUuid(id string) *Resource {
+	db.Where("uuid = ?", id).Take(r.resource)
+
+	return r.resource
 }
 
 func (r *ResourceRepository) CastExtToType(ext string) string {

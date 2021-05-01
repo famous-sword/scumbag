@@ -1,4 +1,4 @@
-package api
+package upload
 
 import "net/http"
 

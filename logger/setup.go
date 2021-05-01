@@ -13,7 +13,7 @@ var writer *zap.Logger = zap.NewNop()
 type Bootstrapper struct{}
 
 func (_ *Bootstrapper) Bootstrap() (err error) {
-	fileWriteSyncer := zapcore.AddSync(&lumberjack.Logger{
+	syncer := zapcore.AddSync(&lumberjack.Logger{
 		Filename:   config.String("logging.file"),
 		MaxSize:    1,
 		MaxBackups: 5,
@@ -26,7 +26,7 @@ func (_ *Bootstrapper) Bootstrap() (err error) {
 	encoderConfig.EncodeLevel = zapcore.CapitalLevelEncoder
 
 	encoder := zapcore.NewConsoleEncoder(encoderConfig)
-	core := zapcore.NewCore(encoder, fileWriteSyncer, zapcore.DebugLevel)
+	core := zapcore.NewCore(encoder, syncer, zapcore.DebugLevel)
 	writer = zap.New(core, zap.AddCaller())
 
 	return nil
@@ -36,6 +36,6 @@ func NewBootstrapper() foundation.Bootable {
 	return &Bootstrapper{}
 }
 
-func Writter() *zap.Logger {
+func Writer() *zap.Logger {
 	return writer
 }

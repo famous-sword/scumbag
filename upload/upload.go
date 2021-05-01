@@ -1,4 +1,4 @@
-package api
+package upload
 
 import (
 	"github.com/famous-sword/scumbag/foundation"
@@ -10,7 +10,7 @@ import (
 
 type Uploader struct{}
 
-func (u *Uploader) Register(router *gin.Engine) {
+func (u *Uploader) Apply(router *gin.Engine) {
 	router.PUT("/upload", u.upload)
 }
 
